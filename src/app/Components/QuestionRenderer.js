@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import TextInput from './TextField';
 import RadioInput from './RadioGroup';
 import CheckboxInput from './CheckBoxGroup';
 import { TableInput } from './TableInput';
@@ -12,6 +11,7 @@ import DateInput from './DateInput';
 import Boolean from './Boolean';
 import FileUpload from './FileUpload';
 import GeographyInput from './GeographyInput';
+import TextField from './TextField';
 
 const QuestionRenderer = ({ questions }) => {
   const answers = useSelector((state) => state.form.answers); // Get answers from Redux store
@@ -39,16 +39,25 @@ const QuestionRenderer = ({ questions }) => {
           switch (question.type) {
             case 'text':
               return (
-                <TextInput
+                <TextField
                   key={question.id}
                   type={'text'}
                   placeholder={'John'}
                   question={question}
                 />
               );
+              case 'name':
+              return (
+                <TextField
+                  key={question.id}
+                  type={'name'}
+                  placeholder={'John'}
+                  question={question}
+                />
+              );
             case 'email':
               return (
-                <TextInput
+                <TextField
                   key={question.id}
                   type={'email'}
                   question={question}
@@ -57,7 +66,7 @@ const QuestionRenderer = ({ questions }) => {
               );
             case 'phone':
               return (
-                <TextInput
+                <TextField
                   key={question.id}
                   type={'tel'}
                   placeholder={'+34 6XX XXX XXX'}

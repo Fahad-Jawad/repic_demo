@@ -75,7 +75,7 @@
 export const section1Questions = [
   {
     id: 's1.q.2.1',
-    type: 'text',
+    type: 'name',
     label: 'Full Name',
     isRequired: true,
     endpointKey: null, // No dynamic options
@@ -147,7 +147,7 @@ export const section2BQuestions = [
     type: 'date',
     label: 'Do you have a date in the Entity calendar?',
     isRequired: false,
-    constraint: 'date>today',
+    constraint: '>',
   },
   {
     id: 's2.q.2.b.3',

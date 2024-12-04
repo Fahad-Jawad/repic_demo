@@ -6,12 +6,16 @@ import { Input } from '@/components/ui/input';
 
 export default function TextField({ question, type, placeholder }) {
   const dispatch = useDispatch();
-  const { value } = useSelector((state) => state.answers?.[question.id] || '');
-
+  const value = useSelector((state) => state.form.answers?.[question.id] || '');
 
   const handleChange = (e) => {
     console.log(e.target.value);
-    dispatch(setAnswer({ questionId: question.id, value: e.target.value }));
+    let text=e.target.value
+    if (type == 'name') {
+      text = text.replace(/[^a-zA-Z\s]/g, ''); // Remove non-alphabetic characters, allow spaces
+    }
+    console.log('t',text)
+    dispatch(setAnswer({ questionId: question.id, value: text }));
   };
 
   return (

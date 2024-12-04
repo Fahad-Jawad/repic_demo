@@ -2,7 +2,6 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -11,15 +10,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAnswer } from '../store/slices/formSlice';
+
 
 export default function DateInput({ question }) {
   const dispatch = useDispatch();
-  // const value = useSelector((state) => state.answers[question.id]);
-const value=null
+  const value = useSelector((state) => state.form.answers[question.id]);
   const handleChange = (value) => {
     console.log(value)
-    // dispatch(setAnswer({ questionId: question.id, value: value }));
+    dispatch(setAnswer({ questionId: question.id, value: value }));
   };
 
   return (
@@ -37,7 +37,7 @@ const value=null
           >
             <CalendarIcon />
             {value ? (
-              format(value, 'YYYY/MM/DD')
+              format(value, 'yyyy/MM/dd')
             ) : (
               <span className='text-sm'>Pick a date</span>
             )}
@@ -49,7 +49,7 @@ const value=null
             selected={value}
             onSelect={(value) => handleChange(format(value, 'yyyy/MM/dd'))}
             initialFocus
-            disabled={{ before: new Date() }}
+            disabled={question.constraint === '>' ? { before: new Date() } :'' } // Disable conditionally
             className='w-full'
           />
         </PopoverContent>

@@ -62,15 +62,10 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setAnswer(state, action) {
-      const existingAnswerIndex = state.answers.findIndex(
-        (ans) => ans.questionId === action.payload.questionId
-      );
-      if (existingAnswerIndex !== -1) {
-        state.answers[existingAnswerIndex] = action.payload;
-      } else {
-        console.log('sts', action.payload);
-        state.answers.push(action.payload);
-      }
+      const { questionId, value } = action.payload;
+    
+      // Directly update or add the answer with the key as questionId
+      state.answers[questionId] = value;
     },
     clearAnswer(state, action) {
       state.answers = state.answers.filter(
