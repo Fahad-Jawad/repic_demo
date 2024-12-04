@@ -2,8 +2,6 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 
-import React from 'react'
-
 export default function FileUpload({ question, onChange }) {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -19,22 +17,22 @@ export default function FileUpload({ question, onChange }) {
     }
   };
   return (
-    <div className='my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3'>
-    <label className='block text-gray-700 font-bold'>{question.title}</label>
-    <p className='text-sm text-gray-500'>{question.desc}</p>
-    <div className='flex w-full lg:w-1/2 items-center '>
+    <div className='my-5 w-[49%] flex flex-col'>
+    <label className='mb-4 block text-gray-700 font-normal'>{question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}</label>
+    <div className='flex w-3/4 items-center '>
       <Input
         type='file'
         onChange={(e) => handleFileChange(e)}
         id='formFile'
-        className='!leading-6 text-sm'
+        className='h-12 py-3 text-sm'
         data-max-size={10 * 1024 * 1024}
         accept='.pdf, .xls, .doc, .txt, .jpg'
       />{' '}
-        <small className="text-gray-500">
+
+    </div>
+    <small className="text-gray-500 mt-3 ml-1">
         Allowed types: PDF, XLS, DOC, TXT, JPG. Max size: 10MB.
       </small>
-    </div>
   </div>  )
 }
 

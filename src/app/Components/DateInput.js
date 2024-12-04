@@ -15,23 +15,23 @@ import { useDispatch } from 'react-redux';
 
 export default function DateInput({ question }) {
   const dispatch = useDispatch();
-  const value = useSelector((state) => state.answers[question.id]);
-
+  // const value = useSelector((state) => state.answers[question.id]);
+const value=null
   const handleChange = (value) => {
-    dispatch(setAnswer({ questionId: question.id, value: value }));
+    console.log(value)
+    // dispatch(setAnswer({ questionId: question.id, value: value }));
   };
 
   return (
-    <div className='my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3'>
-      <label className='block text-gray-700 font-bold'>{question.title}</label>
-      <p className='text-sm text-gray-500'>{question.desc}</p>
+    <div className='my-5 w-[49%] flex flex-col'>
+      <label className='mb-4 block text-gray-700 font-normal'>{question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}</label>
 
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant={'outline'}
             className={cn(
-              ' w-full lg:w-1/2 justify-start text-left font-normal',
+              ' h-12 lg:w-3/4 justify-start text-left font-normal',
               !value && 'text-muted-foreground'
             )}
           >
@@ -43,12 +43,14 @@ export default function DateInput({ question }) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className='w-auto p-0' align='start'>
+        <PopoverContent className='w-full p-0' align='start'>
           <Calendar
             mode='single'
             selected={value}
-            onSelect={(value) => handleChange(value)}
+            onSelect={(value) => handleChange(format(value, 'yyyy/MM/dd'))}
             initialFocus
+            disabled={{ before: new Date() }}
+            className='w-full'
           />
         </PopoverContent>
       </Popover>

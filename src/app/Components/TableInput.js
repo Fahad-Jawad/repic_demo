@@ -9,7 +9,7 @@ import {
   TableHead,
 } from '@/components/ui/table';
 
-export const CustomTable = ({ question, data }) => (
+export const TableInput = ({ question, data }) => (
   <div className='my-5 p-4 py-6 bg-white rounded-xl shadow-md'>
     <label className='block text-gray-700 font-bold'>{question.title}</label>
     <p className='text-sm text-gray-500'>{question.desc}</p>

@@ -28,8 +28,7 @@ export default function RadioGroupQuestion({ question }) {
 
   return (
     <div className="my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3">
-      <label className="block text-gray-700 font-bold">{question.title}</label>
-      <p className="text-sm text-gray-500">{question.desc}</p>
+      <label className="mb-4 block text-gray-700 font-bold">{question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}</label>
 
       <RadioGroup value={value} onValueChange={(selectedValue) => handleChange(selectedValue)}>
         {options.map((option, index) => (

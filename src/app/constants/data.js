@@ -330,11 +330,6 @@
 //             isRequired: true,
 //             constraint: null,
 //             saveAttrib: ABOM_Section4.boolAllowFile1,
-//             actions:{
-//                 if (YES) { enableQuestion("s3.q.4")},
-//                 else (NO)  { disableQuesion("s3.q.4");
-//                 }
-//             },
 //             endpointKey: null, // No dynamic options
 //         },
 //         {
@@ -351,6 +346,7 @@
 //             type: 'textArea',// A paragraph
 //             label: 'Write the description for the Category Beta',
 //             isRequired: true,
+//             conditions:[{id:'s3.q.2',value:true}],
 //             constraint: "500 < size < 5000",
 //             saveAttrib: ABOM_Section4.strTextFile2,
 //             endpointKey: null, // No dynamic options
@@ -374,6 +370,7 @@
 //             type: 'fileSelector',// A paragraph
 //             label: 'Upload the file for Category',
 //             isRequired: true,
+//             conditions:[{id:'s3.q.6',value:true}],
 //             constraint: "extensionAllowed:pdf,xls,doc,txt,jpg : size<10m",
 //             saveAttrib: ABOM_Section4.strTextFile2,
 //             endpointKey: "http://myBackEnd/saveSection4File?file=2" // POST for the Binary of the File
@@ -394,11 +391,6 @@
 //             isRequired: true,
 //             constraint: null,
 //             saveAttrib: ABOM_Section4.boolAllowFile3,
-//             actions:{
-//                 if (YES) { enableQuestion("s3.q.6")},
-//                 else (NO)  { disableQuesion("s3.q.6");
-//                 }
-//             },
 //             endpointKey: null, // No dynamic options
 //         },
 //         {
@@ -406,6 +398,7 @@
 //             type: 'fileSelector',// A paragraph
 //             label: 'Upload the file for Category',
 //             isRequired: true,
+//             conditions:[{id:'s3.q.8',value:true}],
 //             constraint: "extensionAllowed:pdf,xls,doc,txt,jpg : size<10m",
 //             saveAttrib: ABOM_Section4.strTextFile3,
 //             endpointKey: "http://myBackEnd/saveSection4File?file=2" // POST for the Binary of the File

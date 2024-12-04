@@ -9,11 +9,12 @@ const initialState = {
   options: {}, // This will hold the fetched data
   loading: false,
   error: null,
+  transactionId: null,
+  answers:{}
 };
 import { validateQuestions } from '@/app/utils/utilityFunctions';
 // Define an object to map URLs to their corresponding functions
 const apiEndpoints = {
-  'http://myBackEnd/generateUniqueTransactionID': generateTransactionID,
   'http://myBackEnd/getFullGeographyCountryRegionStateCity': getGeographyData,
   'http://myBackEnd/getCurrencies': getCurrenciesData,
   'http://myBackEnd/getCountriesCitiesObject': getCountriesCitiesData,
@@ -37,6 +38,19 @@ export const fetchOptionsData = createAsyncThunk(
       }, {});
 
       return storedData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+// Async thunk to fetch data concurrently
+export const getTransactionId = createAsyncThunk(
+  'fetch Id',
+  async (_, thunkAPI) => {
+    try {
+      const id = await generateTransactionID();
+      return id;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -80,6 +94,15 @@ const formSlice = createSlice({
       .addCase(fetchOptionsData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+    builder
+      .addCase(getTransactionId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getTransactionId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.transactionId = action.payload; // Store the fetched data
       });
   },
 });

@@ -4,27 +4,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAnswer } from '../store/slices/formSlice';
 import { Input } from '@/components/ui/input';
 
-export default function TextField({ question }) {
+export default function TextField({ question, type, placeholder }) {
   const dispatch = useDispatch();
-  const {value} = useSelector((state) => state.answers?.[question.id] || '');
+  const { value } = useSelector((state) => state.answers?.[question.id] || '');
 
-  const ans=useSelector((state) => state.answers)
-  console.log(ans)
+
   const handleChange = (e) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     dispatch(setAnswer({ questionId: question.id, value: e.target.value }));
   };
 
   return (
-    <div className='my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3'>
-      <label className='block text-gray-700 font-bold'>{question.title}</label>
-      <p className='text-sm text-gray-500'>{question.desc}</p>
+    <div className='my-5 w-[49%] flex flex-col'>
+      <label className='mb-4 block text-gray-700 font-normal'>
+        {question.label}
+        {question.isRequired && <span className='text-red-500 ml-1'>*</span>}
+      </label>
       <Input
-        type='text'
-        id='first_name'
-        className='mt-2  w-full lg:w-1/2 p-2 border border-gray-300 rounded-lg'
+        type={type}
+        id={question.id}
+        className='h-12 w-3/4 !text-base border border-gray-300 rounded-lg'
         onChange={handleChange}
-        placeholder='John'
+        placeholder={placeholder}
         value={value}
         required
       />

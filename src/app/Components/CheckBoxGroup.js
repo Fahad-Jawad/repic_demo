@@ -25,9 +25,8 @@ export default function CheckBoxGroup({ question }) {
   };
 
   return (
-    <div className="my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3">
-      <label className="block text-gray-700 font-bold">{question.label}</label>
-      <p className="text-sm text-gray-500">{question.desc}</p>
+    <div className="my-5 w-[49%] flex flex-col gap-3">
+      <label className="mb-4 block text-gray-700 font-normal">{question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}</label>
       {options.map((option, index) => (
         <div key={index} className="flex items-center mt-2">
           <Checkbox
