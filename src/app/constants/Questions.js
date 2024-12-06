@@ -80,6 +80,7 @@ export const section1Questions = [
     isRequired: true,
     endpointKey: null, // No dynamic options
     staticOptions: null,
+    desc:'this is input for full name'
   },
   {
     id: 's1.q.2.2',
@@ -136,7 +137,7 @@ export const section2BQuestions = [
     id: 's2.q.2.b.1',
     type: 'number',
     label: 'Load from the system the Record for the legal institution',
-    isRequired: true,
+    isRequired: false,
     endpointKey:
       'http://myBackEnd/bringObjectForSection2B?id=ABOM_Section2.numIdEntity',
     endpointKeyType: 'Put',
@@ -190,7 +191,7 @@ export const section3Questions = [
   },
   {
     id: 's3.q.2',
-    type: 'boolean',
+    type: 'checkbox',
     label: 'Color of your House',
     isRequired: true,
     conditions: null,
@@ -246,7 +247,8 @@ export const section3Questions = [
     conditions: null,
     endpointKey: null,
     staticOptions: null,
-    columns: ['name', 'type', 'material'],
+    columns: ['name', 'type', 'material', 'material2', 'material3', 'material4'],
+    rows:[{id:11,name:'abc',type:'resistancefhsdkfhaskldfhaskfhlaskjfhaskfhklsdjhfasjkfhlskjhfkajshdfkjahsdlkjfashlkfsdfasdfasdfsdfasf',material:'iron',material2:'iron2',material3:'iron3',material4:'iron4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'},{id:14,name:'cde',type:'resistance',material:'metal',material2:'metal2',material3:'metal3',material4:'metal4'}]
   },
 ];
 
@@ -280,7 +282,7 @@ export const section4Questions =[
     type: 'textArea',// A paragraph
     label: 'Write the description for the Category Beta',
     isRequired: true,
-    conditions:[{id:'s3.q.2',value:true}],
+    conditions:[{id:'s4.q.2',value:true}],
     endpointKey: null, // No dynamic options
 },
 {
@@ -296,7 +298,7 @@ export const section4Questions =[
     type: 'file',// A paragraph
     label: 'Upload the file for Category',
     isRequired: true,
-    conditions:[{id:'s3.q.5',value:true}],
+    conditions:[{id:'s4.q.5',value:true}],
     constraint: "extensionAllowed:pdf,xls,doc,txt,jpg : size<10m",
     endpointKey: "http://myBackEnd/saveSection4File?file=2" // POST for the Binary of the File
 },
@@ -321,7 +323,7 @@ export const section4Questions =[
     type: 'file',// A paragraph
     label: 'Upload the file for Category',
     isRequired: true,
-    conditions:[{id:'s3.q.8',value:true}],
+    conditions:[{id:'s4.q.8',value:true}],
     constraint: "extensionAllowed:pdf,xls,doc,txt,jpg : size<10m",
     endpointKey: "http://myBackEnd/saveSection4File?file=2" // POST for the Binary of the File
 }

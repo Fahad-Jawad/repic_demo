@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAnswer } from '../store/slices/formSlice';
+import { Tooltips } from './Tooltips';
 
 
 export default function DateInput({ question }) {
@@ -21,11 +22,15 @@ export default function DateInput({ question }) {
     console.log(value)
     dispatch(setAnswer({ questionId: question.id, value: value }));
   };
+  const error = useSelector((state) => state.form.errors?.[question.id] || '');
 
   return (
     <div className='my-5 w-[49%] flex flex-col'>
-      <label className='mb-4 block text-gray-700 font-normal'>{question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}</label>
-
+      <label className='mb-4 flex items-center text-gray-700 font-normal'>
+        {question.label}
+        {question.isRequired && <span className='text-red-500 ml-1'>*</span>}
+        {question.desc && <Tooltips desc={question.desc} />}
+      </label>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -54,6 +59,12 @@ export default function DateInput({ question }) {
           />
         </PopoverContent>
       </Popover>
+
+      {error && (
+        <span className='mt-2 text-sm text-red-500'>
+          {error}
+        </span>
+      )}
     </div>
   );
 }

@@ -6,20 +6,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAnswer } from '../store/slices/formSlice';
+import { Tooltips } from './Tooltips';
 
 export default function SelectInput({ question }) {
-  // Get static or dynamic options
+
+  const dispatch = useDispatch();
+  const value = useSelector((state) => state.form.answers[question.id] ?? '');
+  const error = useSelector((state) => state.form.errors?.[question.id] || '');
+
   const options = question.staticOptions
     ? question.staticOptions
     : useSelector((state) => state.form.options?.[question.endpointKey] || []);
 
+
+    const handleChange = (value) => {
+      dispatch(setAnswer({ questionId: question.id, value: value }));
+    };
+    
+
   return (
     <div className="my-5 w-[49%] flex flex-col">
-      <label className="mb-4 block text-gray-700 font-normal">
-        {question.label} {question.isRequired && <span className="text-red-500 ml-1">*</span>}
+      <label className='mb-4 flex items-center text-gray-700 font-normal'>
+        {question.label}
+        {question.isRequired && <span className='text-red-500 ml-1'>*</span>}
+        {question.desc && <Tooltips desc={question.desc} />}
       </label>
-      <Select className="" key={question.id}>
+      <Select value={value} onValueChange={handleChange}  key={question.id}>
         <SelectTrigger className="!h-12 w-3/4">
           <SelectValue placeholder="Select" />
         </SelectTrigger>
@@ -31,6 +45,11 @@ export default function SelectInput({ question }) {
           ))}
         </SelectContent>
       </Select>
+      {error && (
+         <span className='mt-2 text-sm text-red-500'>
+           {error}
+         </span>
+       )}
     </div>
   );
 }

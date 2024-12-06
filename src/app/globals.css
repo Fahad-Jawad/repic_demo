@@ -70,3 +70,28 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.shadcn-table{
+  max-height: 190px;
+}
+
+.shadcn-table::-webkit-scrollbar {
+  width: 2px; /* Vertical scrollbar width */
+  height: 2px; /* Horizontal scrollbar height */
+
+}
+
+.shadcn-table::-webkit-scrollbar-thumb {
+  background-color: #f3f4f6;
+  /*Tailwind'sgray-100*/border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+
+.shadcn-table::-webkit-scrollbar-track {
+  background: #e6e6e7; /* Optional: Keeps the track clean */
+  width: 2px; /* Vertical scrollbar width */
+  height: 2px;
+}

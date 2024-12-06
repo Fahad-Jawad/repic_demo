@@ -23,9 +23,6 @@ export default function Form1() {
   const transactionId = useSelector((state) => state.form.transactionId || null);
   const loading = useSelector((state) => state.form.loading || false);
 
-  console.log('options', options);
-  console.log('tr', transactionId);
-
   const handleYesFun = () => {
     dispatch(fetchOptionsData());
     dispatch(getTransactionId());

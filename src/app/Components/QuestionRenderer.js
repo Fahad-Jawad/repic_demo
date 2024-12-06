@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import RadioInput from './RadioGroup';
 import CheckboxInput from './CheckBoxGroup';
-import { TableInput } from './TableInput';
+import TableInput from './TableInput';
 import CountryInput from './CountryInput';
 import TextArea from './TextArea';
 import SelectInput from './Select';
@@ -20,11 +20,12 @@ const QuestionRenderer = ({ questions }) => {
   const checkConditions = (question) => {
     if (!question.conditions) return true; // If no conditions, show the question
 
-    // return question.conditions.every((condition) => {
-    //   const answer = answers.find((a) => a.questionId === condition.questionId);
-    //   return answer && answer.value === condition.value; // Check if condition is met
-    // });
+    return question.conditions.every((condition) => {
+      const answer = answers[condition.id];
+      return answer && answer === condition.value; // Check if condition is met
+    });
   };
+  
 
   return (
     <>
@@ -85,8 +86,8 @@ const QuestionRenderer = ({ questions }) => {
               return <RadioInput key={question.id} question={question} />;
             case 'checkbox':
               return <CheckboxInput key={question.id} question={question} />;
-            // case 'table':
-            //   return <TableInput key={question.id} question={question} />;
+            case 'table':
+              return <TableInput key={question.id} question={question} />;
             case 'country':
               return <CountryInput key={question.id} question={question} />;
             case 'geography':
