@@ -9,11 +9,7 @@ export default function Section1() {
   const handleSave = () => {
     dispatch(saveSection1());
   };
-  const errors = useSelector((state) => state.form.errors);
-  const ans = useSelector((state) => state.form.answers);
 
-  console.log('err', errors);
-  console.log('anss', ans);
 
   return (
     <div className='flex flex-col gap-10'>
