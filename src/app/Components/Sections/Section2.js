@@ -8,6 +8,7 @@ import QuestionRenderer from '../QuestionRenderer';
 import ActionBoolean from '../ActionBoolean';
 import { useSelector, useDispatch } from 'react-redux';
 import { saveSection2, setAnswer } from '@/app/store/slices/formSlice';
+import PaginatedQuestions from '../PaginatedQuestions';
 
 export default function Section2() {
   const dispatch = useDispatch();
@@ -30,8 +31,6 @@ export default function Section2() {
     setSectionQuestions(section2BQuestions);
   };
 
-  console.log(value, 'vv');
-
   return (
     <div className='flex flex-col'>
       <ActionBoolean
@@ -43,18 +42,8 @@ export default function Section2() {
         handleYes={handleYesFun}
         handleNo={handleNoFun}
       />
-      <QuestionRenderer questions={sectionQuestions} />
-      <div className='w-full flex justify-end'>
-        <button
-          className='p-3 px-4 text-base font-semibold w-max rounded-xl 
-             bg-blue-500 text-white 
-             disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed'
-          onClick={() => handleSave()}
-          disabled={value === null}
-        >
-          Save / Next
-        </button>
-      </div>
+      <PaginatedQuestions questions={sectionQuestions} onSave={handleSave} />
+ 
     </div>
   );
 }

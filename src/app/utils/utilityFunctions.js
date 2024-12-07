@@ -34,8 +34,15 @@ export function validateQuestions(questions, answers) {
     if (type === 'phone' && answer && !phoneRegex.test(answer)) {
       errors[id] = `Invalid phone number format.`;
     }
- 
-    
+
+    if (type === 'textArea') {
+      if (text.length < 500) {
+        errors[id] = `Minimum length is 500 characters.`;
+      } else if (text.length > 5000) {
+        errors[id] = `Maximum length is 5000 characters.`;
+      }
+    }
+
   });
 
   return errors;

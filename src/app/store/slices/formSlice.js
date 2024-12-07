@@ -66,10 +66,10 @@ const extractAnswersForSection = (state, sectionQuestions) => {
 };
 
 const nullifyAnswersForSection = (sectionQuestions) => {
-  return sectionQuestions.map((q) => ({
-    id: q.id,
-    value: null,
-  }));
+  return sectionQuestions.reduce((acc, q) => {
+    acc[q.id] = null;
+    return acc;
+  }, {});
 };
 
 const checkConditionsAndUpdateAnswers = (questions) => {
@@ -97,7 +97,68 @@ const checkConditionsAndUpdateAnswers = (questions) => {
   };
 };
 
+// Async thunk to fetch data concurrently
+export const fetchOptionsData = createAsyncThunk(
+  'options/fetchData',
+  async (_, thunkAPI) => {
+    try {
+      const results = await Promise.all(
+        Object.keys(apiEndpoints).map((url) =>
+          apiEndpoints[url]().then((data) => ({ url, data }))
+        )
+      );
 
+      // Convert results into a key-value object
+      const storedData = results.reduce((acc, { url, data }) => {
+        acc[url] = data;
+        return acc;
+      }, {});
+
+      return storedData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+// Async thunk to fetch data concurrently
+export const getTransactionId = createAsyncThunk(
+  'fetch Id',
+  async (_, thunkAPI) => {
+    try {
+      const id = await generateTransactionID();
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getPreviousValues = createAsyncThunk(
+  'answers/getPreviousValues',
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        'https://api.example.com/get-previous-values',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const data = await response.json();
+      return data; // Return the fetched data to store in state.answers
+    } catch (error) {
+      return rejectWithValue(error.message); // Handle errors gracefully
+    }
+  }
+);
 
 export const saveSection1 = createAsyncThunk(
   'sections/saveSection1',
@@ -187,29 +248,31 @@ export const saveSection2 = createAsyncThunk(
 export const saveSection3 = createAsyncThunk(
   'sections/saveSection3',
   async (_, { getState, rejectWithValue }) => {
-    try{
-    const { form } = getState();
-    const transactionId = form.transactionId;
-    const answers = extractAnswersForSection(form, section3Questions);
-    const payload = {
-      transactionId,
-      answers,
-    };
+    try {
+      const { form } = getState();
+      const transactionId = form.transactionId;
+      const answers = extractAnswersForSection(form, section3Questions);
+      const payload = {
+        transactionId,
+        answers,
+      };
 
-    console.log('pay',payload)
-    const errors = validateQuestions(section3Questions, answers);
+      console.log('pay', payload);
+      const errors = validateQuestions(section3Questions, answers);
 
-    if (Object.keys(errors).length > 0) {
-      console.error('Validation errors:', errors);
-      return rejectWithValue({ errors });
+      if (Object.keys(errors).length > 0) {
+        console.error('Validation errors:', errors);
+        return rejectWithValue({ errors });
+      }
+
+      const response = await axios.post(
+        'http://myBackEnd/saveSection3',
+        payload
+      );
+      return response.data;
+    } catch (e) {
+      console.log(e);
     }
-
-    const response = await axios.post('http://myBackEnd/saveSection3', payload);
-    return response.data;
-  }
-  catch(e){
-    console.log(e)
-  }
   }
 );
 
@@ -230,49 +293,14 @@ export const saveSection4 = createAsyncThunk(
       console.error('Validation errors:', errors);
       return rejectWithValue({ errors });
     }
-    checkConditionsAndUpdateAnswers(section4Questions,form)
-    console.log('fo',form.answers)
+    checkConditionsAndUpdateAnswers(section4Questions, form);
+    console.log('fo', form.answers);
     const response = await axios.post('http://myBackEnd/saveSection4', payload);
     return response.data;
   }
 );
 
-// Async thunk to fetch data concurrently
-export const fetchOptionsData = createAsyncThunk(
-  'options/fetchData',
-  async (_, thunkAPI) => {
-    try {
-      const results = await Promise.all(
-        Object.keys(apiEndpoints).map((url) =>
-          apiEndpoints[url]().then((data) => ({ url, data }))
-        )
-      );
 
-      // Convert results into a key-value object
-      const storedData = results.reduce((acc, { url, data }) => {
-        acc[url] = data;
-        return acc;
-      }, {});
-
-      return storedData;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-// Async thunk to fetch data concurrently
-export const getTransactionId = createAsyncThunk(
-  'fetch Id',
-  async (_, thunkAPI) => {
-    try {
-      const id = await generateTransactionID();
-      return id;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
 
 const formSlice = createSlice({
   name: 'form',
@@ -280,7 +308,7 @@ const formSlice = createSlice({
   reducers: {
     setAnswer(state, action) {
       const { questionId, value } = action.payload;
-      console.log(value)
+      console.log(value);
       // Directly update or add the answer with the key as questionId
       state.answers[questionId] = value;
     },
@@ -307,15 +335,30 @@ const formSlice = createSlice({
         state.loading = false;
         state.errors = action.payload;
       });
+          // get previous answers and populating them 
+
     builder
-      .addCase(getTransactionId.pending, (state) => {
+      .addCase(getPreviousValues.pending, (state) => {
         state.loading = true;
-        state.errors = null;
       })
-      .addCase(getTransactionId.fulfilled, (state, action) => {
+      .addCase(getPreviousValues.fulfilled, (state, action) => {
         state.loading = false;
-        state.transactionId = action.payload.transactionID; // Store the fetched data
-      });
+        state.answers = action.payload; // Store data into answers
+      })
+      .addCase(getPreviousValues.rejected, (state, action) => {
+        state.loading = false;
+      }),
+      builder
+        .addCase(getTransactionId.pending, (state) => {
+          state.loading = true;
+          state.errors = null;
+        })
+        .addCase(getTransactionId.fulfilled, (state, action) => {
+          state.loading = false;
+          state.transactionId = action.payload.transactionID; // Store the fetched data
+        });
+            // saveSection1
+
     builder
       .addCase(saveSection1.pending, (state) => {
         state.loading = true;

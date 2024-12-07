@@ -98,18 +98,92 @@ export const section1Questions = [
     endpointKey: null, // No dynamic options
     staticOptions: null,
   },
+  {
+    id: 's1.q.2.15',
+    type: 'name',
+    label: 'Full Name',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+    desc:'this is input for full name'
+  },
+  {
+    id: 's1.q.2.4',
+    type: 'email',
+    label: 'Email 1',
+    isRequired: true,
+    endpointKey: null,
+    staticOptions: null,
+  },
+  {
+    id: 's1.q.2.5',
+    type: 'phone',
+    label: 'Telephone Number 1',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+  },
+  {
+    id: 's1.q.2.6',
+    type: 'name',
+    label: 'Full Name',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+    desc:'this is input for full name'
+  },
+  {
+    id: 's1.q.2.7',
+    type: 'email',
+    label: 'Email 1',
+    isRequired: true,
+    endpointKey: null,
+    staticOptions: null,
+  },
+  {
+    id: 's1.q.2.8',
+    type: 'phone',
+    label: 'Telephone Number 1',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+  },
+  {
+    id: 's1.q.2.9',
+    type: 'name',
+    label: 'Full Name',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+    desc:'this is input for full name'
+  },
+  {
+    id: 's1.q.2.10',
+    type: 'email',
+    label: 'Email 1',
+    isRequired: true,
+    endpointKey: null,
+    staticOptions: null,
+  },
+  {
+    id: 's1.q.2.11',
+    type: 'phone',
+    label: 'Telephone Number 1',
+    isRequired: true,
+    endpointKey: null, // No dynamic options
+    staticOptions: null,
+  },
 ];
 
 export const section2AQuestions = [
-  //   {
-  //     id: 's2.q.2.a.1',
-  //     type: 'number',
-  //     label: 'Load from the system the Record for the ID',
-  //     isRequired: true,
-  //     saveAttrib: ABOM_Section2.numIdNatural,
-  //     endpointKey: "http://myBackEnd/bringObjectForSection2A?id=ABOM_Section2.numIdNatural",
-  //     endpointKeyType: "Put",
-  // },
+    {
+      id: 's2.q.2.a.1',
+      type: 'number',
+      label: 'Load from the system the Record for the ID',
+      isRequired: true,
+      endpointKey: "http://myBackEnd/bringObjectForSection2A?id=ABOM_Section2.numIdNatural",
+      endpointKeyType: "Put",
+  },
   {
     id: 's2.q.2.a.2',
     type: 'date',

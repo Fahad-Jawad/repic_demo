@@ -56,6 +56,16 @@ const QuestionRenderer = ({ questions }) => {
                   question={question}
                 />
               );
+
+              case 'number':
+                return (
+                  <TextField
+                    key={question.id}
+                    type={'number'}
+                    placeholder={'0'}
+                    question={question}
+                  />
+                );
             case 'email':
               return (
                 <TextField

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAnswer } from '../store/slices/formSlice';
 import {
@@ -14,105 +14,65 @@ import {
 import { Tooltips } from './Tooltips';
 
 const GeographyInput = ({ question }) => {
-  const [cities, setCities] = useState([]);
-  const [regions, setRegions] = useState([]);
-  const [states, setStates] = useState([]);
   const dispatch = useDispatch();
 
+  // Get dynamic country data
+  const countries = useSelector((state) => state.form.options[question.endpointKey]);
   
-  const countries = useSelector(
-    (state) => state.form.options[question.endpointKey]
+  // Extract current selections from Redux state
+  const { country = '', region = '', state = '', city = '' } = useSelector(
+    (state) => state.form.answers[question.id] || {}
   );
-  const {country} = useSelector((state) => state.form.answers[question.id]) || '';
-  const {region} = useSelector((state) => state.form.answers[question.id]) || '';
-  const {state} = useSelector((state) => state.form.answers[question.id]) || '';
-  const {city} = useSelector((state) => state.form.answers[question.id]) || '';
+
+  const [regions, setRegions] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
   // Handle country change
-const handleCountryChange = (value) => {
-  const selectedCountry = countries[value];
-  if (selectedCountry) {
-    setRegions(selectedCountry.regions); // Set regions based on country
-    setStates([]); // Reset states
-    setCities([]); // Reset cities
-    dispatch(
-      setAnswer({
+  const handleCountryChange = useCallback((value) => {
+    const selectedCountry = countries[value];
+    if (selectedCountry) {
+      setRegions(selectedCountry.regions || []); // Set regions based on country
+      setStates([]); // Reset states
+      setCities([]); // Reset cities
+      dispatch(setAnswer({ questionId: question.id, value: { country: value, region: '', state: '', city: '' } }));
+    }
+  }, [countries, dispatch, question.id]);
+
+  // Handle region change
+  const handleRegionChange = useCallback((value) => {
+    const selectedRegion = regions.find((region) => region.name === value);
+    if (selectedRegion) {
+      setStates(selectedRegion.states || []); // Set states based on region
+      setCities([]); // Reset cities
+      dispatch(setAnswer({
         questionId: question.id,
-        value: { country: value, region: '', state: '', city: '' }, // Update with selected country
-      })
-    );
-  }
-};
+        value: { country, region: value, state: '', city: '' }
+      }));
+    }
+  }, [regions, country, dispatch, question.id]);
 
-// Handle region change
-const handleRegionChange = (value) => {
-  const selectedRegion = regions.find((region) => region.name === value);
-  if (selectedRegion) {
-    setStates(selectedRegion.states); // Set states based on region
-    setCities([]); // Reset cities
-       // Access current value from the Redux store
-
-       const newValue = { 
-         country:country, // Get the current value from Redux state
-         region: value, 
-         state: '', 
-         city: '' 
-       };
-   
-       dispatch(
-         setAnswer({
-           questionId: question.id,
-           value: newValue, // Directly pass the updated value
-         })
-       );
-
-  }
-};
-
-// Handle state change
-const handleStateChange = (value) => {
-  const selectedState = states.find((state) => state.name === value);
-  if (selectedState) {
-    setCities(selectedState.cities); // Set cities based on state
-    
-    const newValue = { 
-      country:country, // Get the current value from Redux state
-      region: region, 
-      state: value, 
-      city: '' 
-    };
-
-    dispatch(
-      setAnswer({
+  // Handle state change
+  const handleStateChange = useCallback((value) => {
+    const selectedState = states.find((state) => state.name === value);
+    if (selectedState) {
+      setCities(selectedState.cities || []); // Set cities based on state
+      dispatch(setAnswer({
         questionId: question.id,
-        value: newValue, // Directly pass the updated value
-      })
-    );
+        value: { country, region, state: value, city: '' }
+      }));
+    }
+  }, [states, country, region, dispatch, question.id]);
 
-  }
-};
-
-// Handle city change
-const handleCityChange = (value) => {
-   
-  const newValue = { 
-    country:country, // Get the current value from Redux state
-    region: region, 
-    state: state, 
-    city: value 
-  };
-
-  dispatch(
-    setAnswer({
+  // Handle city change
+  const handleCityChange = useCallback((value) => {
+    dispatch(setAnswer({
       questionId: question.id,
-      value: newValue, // Directly pass the updated value
-    })
-  );
-};
-
+      value: { country, region, state, city: value }
+    }));
+  }, [country, region, state, dispatch, question.id]);
 
   const error = useSelector((state) => state.form.errors?.[question.id] || '');
-
 
   return (
     <div className='my-5 w-full'>
@@ -124,7 +84,7 @@ const handleCityChange = (value) => {
 
       <div className='flex gap-5 w-3/4'>
         {/* Country Dropdown */}
-        <Select value={country} onValueChange={(value) => handleCountryChange(value)}>
+        <Select value={country} onValueChange={handleCountryChange}>
           <SelectTrigger className='h-12 w-1/2'>
             <SelectValue placeholder='Select Country' />
           </SelectTrigger>
@@ -141,67 +101,58 @@ const handleCityChange = (value) => {
         </Select>
 
         {/* Region Dropdown */}
-        <Select value={region} disabled={!regions.length} onValueChange={(value) => handleRegionChange(value)}>
+        <Select value={region} disabled={!regions.length} onValueChange={handleRegionChange}>
           <SelectTrigger className='h-12 w-1/2'>
             <SelectValue placeholder='Select Region' />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Select Region</SelectLabel>
-              {regions.length > 0 ? (
-                regions.map((region) => (
-                  <SelectItem key={region.code} value={region.name}>
-                    {region.name} {/* Region name as the value */}
-                  </SelectItem>
-                ))
-              ) : null}
+              {regions.map((region) => (
+                <SelectItem key={region.name} value={region.name}>
+                  {region.name}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>
 
         {/* State Dropdown */}
-        <Select value={state} disabled={!states.length} onValueChange={(value) => handleStateChange(value)}>
+        <Select value={state} disabled={!states.length} onValueChange={handleStateChange}>
           <SelectTrigger className='h-12 w-1/2'>
             <SelectValue placeholder='Select State' />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Select State</SelectLabel>
-              {states.length > 0 ? (
-                states.map((state) => (
-                  <SelectItem key={state.code} value={state.name}>
-                    {state.name} {/* State name as the value */}
-                  </SelectItem>
-                ))
-              ) : null}
+              {states.map((state) => (
+                <SelectItem key={state.name} value={state.name}>
+                  {state.name}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>
 
         {/* City Dropdown */}
-        <Select value={city} disabled={!cities.length} onValueChange={(value) => handleCityChange(value)}>
+        <Select value={city} disabled={!cities.length} onValueChange={handleCityChange}>
           <SelectTrigger className='h-12 w-1/2'>
             <SelectValue placeholder='Select City' />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Select City</SelectLabel>
-              {cities.length > 0 ? (
-                cities.map((city) => (
-                  <SelectItem key={city.code} value={city.name}>
-                    {city.name} {/* City name as the value */}
-                  </SelectItem>
-                ))
-              ) : null}
+              {cities.map((city) => (
+                <SelectItem key={city.name} value={city.name}>
+                  {city.name}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      {error && (
-        <span className='mt-2 text-sm text-red-500'>
-          {error}
-        </span>
-      )}
+
+      {error && <span className='mt-2 text-sm text-red-500'>{error}</span>}
     </div>
   );
 };

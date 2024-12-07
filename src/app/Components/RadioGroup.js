@@ -1,12 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAnswer } from '../store/slices/formSlice';
 import { Tooltips } from './Tooltips';
 
-export default function RadioGroupQuestion({ question }) {
+const RadioGroupQuestion = React.memo(({ question }) => {
   const dispatch = useDispatch();
 
   // Get static or dynamic options
@@ -18,15 +18,13 @@ export default function RadioGroupQuestion({ question }) {
   const value = useSelector((state) => state.answers?.[question.id] || '');
   const error = useSelector((state) => state.form.errors?.[question.id] || '');
 
-  // Handle radio button change
-  const handleChange = (selectedValue) => {
-    dispatch(
-      setAnswer({
-        questionId: question.id,
-        value: selectedValue,
-      })
-    );
-  };
+  // Use useCallback to memoize the handleChange function
+  const handleChange = useCallback(
+    (selectedValue) => {
+      dispatch(setAnswer({ questionId: question.id, value: selectedValue }));
+    },
+    [dispatch, question.id]
+  );
 
   return (
     <div className='my-5 p-4 py-6 bg-white rounded-xl shadow-md flex flex-col gap-3'>
@@ -37,7 +35,7 @@ export default function RadioGroupQuestion({ question }) {
       </label>
       <RadioGroup
         value={value}
-        onValueChange={(selectedValue) => handleChange(selectedValue)}
+        onValueChange={handleChange}
       >
         {options.map((option, index) => (
           <div key={index} className='flex items-center mt-2'>
@@ -57,4 +55,6 @@ export default function RadioGroupQuestion({ question }) {
       {error && <span className='mt-2 text-sm text-red-500'>{error}</span>}
     </div>
   );
-}
+});
+
+export default RadioGroupQuestion;
